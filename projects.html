@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | Business Analyst Portfolio</title>
+    <style>
+        /* --- CSS VARIABLES (MATCHING INDEX.HTML) --- */
+        :root {
+            --bg-color: #f8f9fa;
+            --text-main: #2d3436;
+            --text-light: #636e72;
+            --accent: #0984e3;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.05);
+            --shadow-hover: 0 15px 30px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+
+        /* --- LAYOUT UTILITIES --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        section { padding: 80px 0; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 40px; background: rgba(255,255,255,0.95); position: fixed;
+            width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            backdrop-filter: blur(5px);
+        }
+        .logo { font-weight: 700; font-size: 1.2rem; letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; opacity: 0.7; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); opacity: 1; }
+        .menu-toggle { display: none; cursor: pointer; font-size: 1.5rem; }
+
+        /* --- PAGE HEADER --- */
+        .header-section {
+            padding-top: 180px;
+            padding-bottom: 40px;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .header-section h1 { font-size: 3rem; margin-bottom: 20px; line-height: 1.2; }
+        .header-section p { font-size: 1.1rem; color: var(--text-light); }
+
+        /* --- FILTER BUTTONS --- */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 2px solid #e0e0e0; /* Neutral grey initially */
+            color: var(--text-light);
+            padding: 8px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            font-family: var(--font-main);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        /* --- PROJECTS GRID --- */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 40px;
+            padding-bottom: 100px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease; /* Slightly slower for filter effect */
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top Accent Line */
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease;
+        }
+        .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); }
+        .card:hover::before { transform: scaleX(1); }
+
+        /* Filter Hidden State */
+        .card.hide {
+            display: none; /* Removes from flow so grid rearranges */
+        }
+        
+        /* Animation Helper */
+        .card.show {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-category { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); font-weight: 700; margin-bottom: 15px; }
+        .card h3 { font-size: 1.4rem; margin-bottom: 15px; color: var(--text-main); }
+        .card p { color: var(--text-light); font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1; }
+        .tags { margin-bottom: 25px; }
+        .tags span { background: #f1f3f5; padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; color: var(--text-light); margin-right: 6px; display: inline-block; margin-bottom: 6px; font-weight: 500; }
+        .project-link { font-size: 0.9rem; font-weight: 600; color: var(--text-main); display: inline-flex; align-items: center; gap: 5px; }
+        .project-link:hover { color: var(--accent); gap: 10px; }
+
+        /* --- FOOTER --- */
+        .cta-section { text-align: center; padding: 60px 20px; border-top: 1px solid #e0e0e0; margin-top: 40px; }
+        .btn-outline { display: inline-block; padding: 12px 30px; border: 2px solid var(--accent); color: var(--accent); border-radius: 5px; font-weight: 600; margin-top: 20px; }
+        .btn-outline:hover { background: var(--accent); color: white; }
+
+        /* --- ANIMATIONS (SCROLL) --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; right: 0; background: white; width: 100%; text-align: center; padding: 20px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+            .nav-links.active { display: flex; }
+            .menu-toggle { display: block; }
+            .header-section h1 { font-size: 2.2rem; }
+            .filter-container { gap: 10px; }
+            .filter-btn { padding: 6px 16px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">AYAN DUTTA</div>
+        <div class="menu-toggle" id="mobile-menu">☰</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#experience">Experience</a></li>
+            <li><a href="projects.html" class="active">Projects</a></li>
+            <li><a href="index.html#education">Studies</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <header class="header-section container reveal">
+        <h1>Selected Works</h1>
+        <p>A collection of data science projects, business intelligence dashboards, and strategic analysis.</p>
+    </header>
+
+    <div class="container reveal">
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="ml">Machine Learning</button>
+            <button class="filter-btn" data-filter="viz">Visualization</button>
+            <button class="filter-btn" data-filter="auto">Automation</button>
+            <button class="filter-btn" data-filter="analysis">Analysis</button>
+        </div>
+    </div>
+
+    <section class="container">
+        <div class="project-grid">
+            
+            <div class="card reveal" data-category="ml">
+                <span class="card-category">Machine Learning</span>
+                <h3>Sales Forecasting Model</h3>
+                <p>Developed a time-series forecasting model using Python (ARIMA) to predict quarterly sales with 95% accuracy, aiding inventory planning.</p>
+                <div class="tags">
+                    <span>Python</span><span>Pandas</span><span>Scikit-Learn</span>
+                </div>
+                <a href="#" class="project-link">View Case Study →</a>
+            </div>
+
+            <div class="card reveal" data-category="viz">
+                <span class="card-category">Visualization</span>
+                <h3>Customer Churn Dashboard</h3>
+                <p>Designed an interactive Tableau dashboard to visualize customer attrition rates, helping the marketing team identify high-risk segments.</p>
+                <div class="tags">
+                    <span>Tableau</span><span>SQL</span><span>Data Viz</span>
+                </div>
+                <a href="#" class="project-link">View Dashboard →</a>
+            </div>
+
+            <div class="card reveal" data-category="auto">
+                <span class="card-category">Process Automation</span>
+                <h3>Inventory Optimization</h3>
+                <p>Automated a manual inventory tracking system using VBA macros, reducing stockouts by 15% and saving 10 hours of manual work weekly.</p>
+                <div class="tags">
+                    <span>Excel VBA</span><span>Process Mapping</span>
+                </div>
+                <a href="#" class="project-link">View Details →</a>
+            </div>
+
+            <div class="card reveal" data-category="analysis">
+                <span class="card-category">Statistical Analysis</span>
+                <h3>Marketing Mix Modeling</h3>
+                <p>Performed regression analysis to determine the ROI of various marketing channels for a product launch, optimizing budget allocation.</p>
+                <div class="tags">
+                    <span>R Studio</span><span>Statistics</span><span>Excel</span>
+                </div>
+                <a href="#" class="project-link">Read Analysis →</a>
+            </div>
+
+            <div class="card reveal" data-category="analysis">
+                <span class="card-category">Geospatial Analysis</span>
+                <h3>Logistics Route Analysis</h3>
+                <p>Utilized geospatial libraries to analyze delivery routes and suggest optimized paths, resulting in a 12% reduction in fuel costs.</p>
+                <div class="tags">
+                    <span>Python</span><span>GeoPandas</span><span>Folium</span>
+                </div>
+                <a href="#" class="project-link">View Code →</a>
+            </div>
+
+            <div class="card reveal" data-category="analysis">
+                <span class="card-category">Web Analytics</span>
+                <h3>E-commerce A/B Testing</h3>
+                <p>Designed and analyzed A/B tests for landing pages, leading to a 5% increase in conversion rate for the checkout flow.</p>
+                <div class="tags">
+                    <span>Google Optimize</span><span>Hypothesis Testing</span>
+                </div>
+                <a href="#" class="project-link">View Results →</a>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="cta-section reveal">
+        <h3>Liked what you saw?</h3>
+        <a href="index.html#contact" class="btn-outline">Let's Work Together</a>
+        <br><br>
+        <a href="index.html" style="color: var(--text-light); font-size: 0.9rem;">← Back to Home</a>
+    </div>
+
+    <script>
+        // 1. FILTER FUNCTIONALITY
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+
+                const filterValue = btn.getAttribute('data-filter');
+
+                projectCards.forEach(card => {
+                    // Reset animations
+                    card.classList.remove('show');
+                    
+                    const cardCategory = card.getAttribute('data-category');
+
+                    if (filterValue === 'all' || filterValue === cardCategory) {
+                        card.classList.remove('hide');
+                        card.classList.add('show'); // Triggers fade in
+                    } else {
+                        card.classList.add('hide');
+                    }
+                });
+                
+                // Re-trigger scroll reveal logic so visible items don't stay hidden by 'reveal' class
+                revealOnScroll();
+            });
+        });
+
+        // 2. SCROLL REVEAL
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+            revealElements.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Trigger on load
+
+        // 3. MOBILE MENU
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

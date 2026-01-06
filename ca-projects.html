@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | codeayan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --col-red: #FF4B4B; 
+            --col-teal: #23D5AB;
+            --col-cyan: #23C9B2;
+            --col-sky: #3A9DD9;
+            --col-royal: #2675C2;
+            
+            --text-white: #ffffff;
+            --font-main: 'Inter', sans-serif;
+            --font-code: 'Fira Code', monospace;
+            --transition: all 0.4s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-white);
+            line-height: 1.6;
+            background: linear-gradient(135deg, var(--col-red) 0%, var(--col-teal) 35%, var(--col-sky) 70%, var(--col-royal) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        section { padding: 100px 0; position: relative; }
+
+        /* --- HEADER & FILTERS --- */
+        .page-header { text-align: center; padding-top: 150px; padding-bottom: 60px; }
+        .page-title { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 20px; text-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+
+        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 40px; }
+        
+        .filter-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 25px; border-radius: 30px; color: white; font-weight: 600; cursor: pointer;
+            backdrop-filter: blur(10px); transition: var(--transition); font-family: var(--font-code); font-size: 0.9rem;
+        }
+        .filter-btn:hover, .filter-btn.active { background: white; color: var(--col-royal); transform: translateY(-2px); }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 40px; background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px); position: fixed; width: 100%; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        .brand-logo-img {
+            width: 50px; height: 50px; background: white; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-family: var(--font-code); color: var(--col-red);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden;
+        }
+        .brand-logo-img img { width: 100%; height: 100%; object-fit: contain; }
+        .brand-name { font-family: var(--font-code); font-weight: 700; font-size: 1.5rem; letter-spacing: -1px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { font-size: 0.95rem; font-weight: 600; opacity: 0.9; }
+        .nav-links a:hover { opacity: 1; transform: translateY(-2px); }
+        .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; }
+
+        /* --- PROJECTS GRID --- */
+        .projects-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px; 
+            min-height: 500px; /* Prevents layout collapse when filtering */
+        }
+        
+        .project-card {
+            background: rgba(0,0,0,0.3); padding: 30px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1); transition: var(--transition);
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Visibility Classes */
+        .project-card.hide { display: none; }
+        .project-card.show { animation: fadeInUp 0.5s ease forwards; }
+
+        .project-card:hover { transform: translateY(-8px); border-color: var(--col-cyan); background: rgba(0,0,0,0.5); }
+        
+        .card-category {
+            font-size: 0.75rem; font-family: var(--font-code);
+            background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 4px;
+            display: inline-block; margin-bottom: 15px; color: var(--col-teal);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .project-card h3 { margin-bottom: 10px; font-size: 1.4rem; font-weight: 700; }
+        .project-card p { font-size: 0.95rem; color: rgba(255,255,255,0.8); margin-bottom: 25px; flex-grow: 1; }
+        
+        .project-links { display: flex; gap: 15px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;}
+        
+        .link-icon {
+            width: 40px; height: 40px; background: rgba(255,255,255,0.1);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            transition: var(--transition); border: 1px solid rgba(255,255,255,0.2);
+        }
+        .link-icon svg { width: 20px; height: 20px; fill: white; }
+        .link-icon:hover { background: white; transform: scale(1.1); }
+        .link-icon:hover svg { fill: black; }
+        .link-icon.yt-link:hover svg { fill: #FF0000; }
+
+        /* --- PAGINATION --- */
+        .pagination-container {
+            margin-top: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-btn {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-weight: 700; font-family: var(--font-code);
+            transition: var(--transition);
+        }
+
+        .page-btn.active { background: white; color: var(--col-royal); }
+        .page-btn:hover:not(.disabled) { background: rgba(255,255,255,0.2); }
+        
+        .page-btn.disabled { opacity: 0.3; cursor: not-allowed; }
+        
+        .nav-arrow { width: auto; padding: 0 20px; border-radius: 30px; }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center; padding: 60px 20px; margin-top: 80px;
+            background: rgba(0,0,0,0.2); backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.2); font-size: 1rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .parallax-shape { position: absolute; border-radius: 50%; z-index: -1; pointer-events: none; }
+        .s1 { width: 400px; height: 400px; top: -10%; left: -10%; background: radial-gradient(circle, var(--col-red), transparent 70%); opacity: 0.4; filter: blur(50px); }
+        .s2 { width: 300px; height: 300px; bottom: 10%; right: 5%; background: rgba(255,255,255,0.1); filter: blur(30px); }
+
+        @media (max-width: 968px) {
+            .page-title { font-size: 2.5rem; }
+            .nav-links { display: none; position: absolute; top: 85px; right: 0; background: rgba(38, 117, 194, 0.98); width: 100%; flex-direction: column; padding: 30px; gap: 20px; }
+            .nav-links.active { display: flex; }
+            .menu-toggle { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="parallax-shape s1" data-speed="2"></div>
+    <div class="parallax-shape s2" data-speed="-2"></div>
+
+    <nav>
+        <div class="logo-container">
+            <div class="brand-logo-img">
+                <img src="media/logo.jpg" alt="CA" onerror="this.style.display='none'"> 
+                <span style="position:absolute; z-index:-1;">CA</span>
+            </div>
+            <div class="brand-name">code<span>ayan</span></div>
+        </div>
+        <div class="menu-toggle" id="mobile-menu">☰</div>
+        <ul class="nav-links">
+            <li><a href="codeayan.html">Home</a></li>
+            <li><a href="codeayan.html#tutorials">Tutorials</a></li>
+            <li><a href="#" class="active" style="color:white; border-bottom:2px solid white;">Projects</a></li>
+            <li><a href="codeayan.html#social-hub">Community</a></li>
+            <li><a href="index.html" style="background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 30px; font-size: 0.85rem;">← Back to Portfolio</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        
+        <header class="page-header">
+            <h1 class="page-title">Project Library</h1>
+            <p style="font-size: 1.2rem; opacity: 0.9;">Practical applications of code, logic, and data analysis.</p>
+            
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="ml">AI & Python</button>
+                <button class="filter-btn" data-filter="bi">Power BI</button>
+                <button class="filter-btn" data-filter="excel">Excel & VBA</button>
+                <button class="filter-btn" data-filter="web">Web Dev</button>
+            </div>
+        </header>
+
+        <div class="projects-grid" id="project-container">
+
+            <div class="project-card" data-category="ml">
+                <span class="card-category">Machine Learning</span>
+                <h3>Voice Assistant AI</h3>
+                <p>Python-based assistant utilizing IBM Watson Text-to-Speech and Speech-to-Text APIs for voice commands.</p>
+                <div class="project-links">
+                    <a href="#" class="link-icon yt-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="bi">
+                <span class="card-category">Power BI</span>
+                <h3>Customer Churn Dashboard</h3>
+                <p>Interactive dashboard visualizing customer attrition rates. Features drill-down capabilities for high-risk segments.</p>
+                <div class="project-links">
+                    <a href="#" class="link-icon yt-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="web">
+                <span class="card-category">Web Development</span>
+                <h3>Secure Login System</h3>
+                <p>Full-stack authentication utilizing PHP/MySQL. Implements password hashing and session security.</p>
+                <div class="project-links">
+                    <a href="#" class="link-icon yt-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="excel">
+                <span class="card-category">Excel & VBA</span>
+                <h3>Inventory Manager</h3>
+                <p>Automated stock tracking system using advanced VBA macros. Reduced manual entry time by 60%.</p>
+                <div class="project-links">
+                    <a href="#" class="link-icon yt-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="abc">
+                <span class="card-category">Excel & VBA</span>
+                <h3>Inventory Manager</h3>
+                <p>Automated stock tracking system using advanced VBA macros. Reduced manual entry time by 60%.</p>
+                <div class="project-links">
+                    <a href="#" class="link-icon yt-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="ml">
+                <span class="card-category">Machine Learning</span>
+                <h3>Sales Forecasting</h3>
+                <p>Predictive model built with Scikit-Learn to forecast quarterly sales trends based on historical data.</p>
+                <div class="project-links">
+                    <a href="#" class="link-icon yt-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="web">
+                <span class="card-category">Web Development</span>
+                <h3>Portfolio 1.0</h3>
+                <p>The first iteration of my personal portfolio using standard HTML/CSS grid layouts.</p>
+                <div class="project-links">
+                    <a href="#" class="link-icon yt-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="ml">
+                <span class="card-category">Machine Learning</span>
+                <h3>Image Classifier</h3>
+                <p>Deep learning model using TensorFlow to classify images with 92% accuracy.</p>
+                <div class="project-links">
+                    <a href="#" class="link-icon yt-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="web">
+                <span class="card-category">Web Development</span>
+                <h3>Admin Dashboard</h3>
+                <p>Responsive admin panel template with dark mode support and chart integrations.</p>
+                <div class="project-links">
+                    <a href="#" class="link-icon yt-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="pagination-container" id="pagination-controls">
+            <button class="page-btn nav-arrow" id="prev-btn" onclick="changePage(-1)">← Prev</button>
+            <span id="page-numbers" style="display: flex; gap: 10px;">
+                </span>
+            <button class="page-btn nav-arrow" id="next-btn" onclick="changePage(1)">Next →</button>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="brand-name" style="margin-bottom: 20px;">code<span>ayan</span></div>
+            <p>&copy; 2025 codeayan. All rights reserved.</p>
+            <p style="margin-top: 10px; opacity: 0.7; font-size: 0.9rem;">
+                Built with 💻 & ☕ by Ayan
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // CONFIGURATION
+        const ITEMS_PER_PAGE = 6;
+        let currentPage = 1;
+        let currentCategory = 'all';
+        let filteredProjects = []; // Array to hold currently visible projects
+
+        // DOM ELEMENTS
+        const projectCards = Array.from(document.querySelectorAll('.project-card'));
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const pageNumbersContainer = document.getElementById('page-numbers');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // INITIALIZE
+        document.addEventListener('DOMContentLoaded', () => {
+            filterProjects('all');
+        });
+
+        // 1. FILTER LOGIC
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button state
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Reset to page 1 when filtering
+                currentPage = 1;
+                currentCategory = btn.getAttribute('data-filter');
+                filterProjects(currentCategory);
+            });
+        });
+
+        function filterProjects(category) {
+            // Get list of matching projects
+            if (category === 'all') {
+                filteredProjects = projectCards;
+            } else {
+                filteredProjects = projectCards.filter(card => card.getAttribute('data-category') === category);
+            }
+            
+            renderPagination();
+        }
+
+        // 2. PAGINATION RENDER LOGIC
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
+
+            // Hide all cards first
+            projectCards.forEach(card => {
+                card.classList.add('hide');
+                card.classList.remove('show');
+            });
+
+            // Calculate start and end index for current page
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+
+            // Show items for current page
+            const visibleItems = filteredProjects.slice(startIndex, endIndex);
+            visibleItems.forEach(card => {
+                card.classList.remove('hide');
+                // Small timeout for animation trigger
+                setTimeout(() => card.classList.add('show'), 10);
+            });
+
+            // Update Pagination UI
+            updatePaginationControls(totalPages);
+        }
+
+        function updatePaginationControls(totalPages) {
+            pageNumbersContainer.innerHTML = '';
+
+            // If 0 or 1 page, hide nav buttons if you prefer, or just disable them
+            if (totalPages <= 1) {
+                prevBtn.classList.add('disabled');
+                nextBtn.classList.add('disabled');
+                // Create single page button if items exist
+                if(filteredProjects.length > 0) createPageButton(1);
+                return;
+            }
+
+            // Enable/Disable Prev/Next
+            prevBtn.classList.toggle('disabled', currentPage === 1);
+            nextBtn.classList.toggle('disabled', currentPage === totalPages);
+
+            // Generate Page Numbers
+            for (let i = 1; i <= totalPages; i++) {
+                createPageButton(i);
+            }
+        }
+
+        function createPageButton(pageNum) {
+            const btn = document.createElement('button');
+            btn.className = `page-btn ${pageNum === currentPage ? 'active' : ''}`;
+            btn.innerText = pageNum;
+            btn.addEventListener('click', () => {
+                currentPage = pageNum;
+                renderPagination();
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll top on page change
+            });
+            pageNumbersContainer.appendChild(btn);
+        }
+
+        // 3. CHANGE PAGE (PREV/NEXT)
+        window.changePage = function(direction) {
+            const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
+            const newPage = currentPage + direction;
+
+            if (newPage > 0 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderPagination();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        // 4. PARALLAX EFFECT
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.parallax-shape');
+            shapes.forEach(shape => {
+                const speed = shape.getAttribute('data-speed');
+                const x = (window.innerWidth - e.clientX * speed) / 100;
+                const y = (window.innerHeight - e.clientY * speed) / 100;
+                shape.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+
+        // 5. MOBILE MENU
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
